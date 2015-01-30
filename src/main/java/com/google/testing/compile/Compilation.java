@@ -33,6 +33,7 @@ import com.sun.tools.javac.api.JavacTool;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
@@ -56,7 +57,7 @@ final class Compilation {
    * @throws RuntimeException if compilation fails.
    */
   static Result compile(Iterable<? extends Processor> processors,
-      Iterable<? extends JavaFileObject> sources) {
+      Set<String> options, Iterable<? extends JavaFileObject> sources) {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     DiagnosticCollector<JavaFileObject> diagnosticCollector =
         new DiagnosticCollector<JavaFileObject>();
@@ -66,7 +67,7 @@ final class Compilation {
         null, // explicitly use the default because old versions of javac log some output on stderr
         fileManager,
         diagnosticCollector,
-        ImmutableSet.<String>of(),
+        ImmutableSet.copyOf(options),
         ImmutableSet.<String>of(),
         sources);
     task.setProcessors(processors);
